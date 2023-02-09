@@ -1,0 +1,16 @@
+use salvo::prelude::*;
+
+// this way we can use the routes from the routes folder which turn out to be the way to go
+mod routes;
+use routes::users;
+
+#[tokio::main]
+async fn main() {
+  let app = Router::with_path("/api/users")
+    .get(users::get_users)
+    .push(Router::with_path("/api/users").post(users::create_user));
+
+  Server::new(TcpListener::bind("127.0.0.1:7878"))
+    .serve(app)
+    .await;
+}
